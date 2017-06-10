@@ -1,4 +1,4 @@
-<!CTYPE html>
+{{define "query"}}
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -33,9 +33,19 @@
         <div class="col-md-4"></div>
       </div>
       <div class="row">
-        <div class="col-md-12">
-          <iframe frameborder="0" height="90%" width="100%" id="viewer" src="/viewer?file=file/HELLO"></iframe>
+        <div class="col-md-3">
+          </div>
+        <div class="col-md-6">
+          <table class="table">
+            <tr>
+    <th>Firstname</th>
+    <th>Lastname</th> 
+    <th>Age</th>
+  </tr>
+          </table>
         </div>
+        <div class="col-md-3">
+          </div>
       </div>
     </div>
 
@@ -58,6 +68,7 @@
           }
           inputdom.value = inputdom.value+'=';
         }
+
         if(event.keyCode === 189){
           if(inputdom === document.activeElement){
             return;
@@ -75,15 +86,11 @@
 
 function changeFile(){
   var inputdom = document.getElementById("filename");
-  var viewerdom = document.getElementById("viewer");
-  var filenamedom= document.getElementById("filenamedisp");
-  viewerdom.src = '/viewer?file=file/'+ inputdom.value;
-  filenamedom.innerHTML = inputdom.value;
-  inputdom.value = '';
+  document.location = '/query?filename='+inputdom.value;
 };
     </script>
 
   </body>
 
 </html>
-
+{{end}}

@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"html/template"
+	"io"
 	"net/http"
 	"os"
 
@@ -19,6 +21,11 @@ var (
 )
 
 var dbmgr *db.DbMgr
+
+type FileHistory struct {
+	Filename string
+	Record   []db.ViewRecord
+}
 
 func GetFile(c echo.Context) (err error) {
 	filename := c.Param("filename")
@@ -40,6 +47,14 @@ func GetFile(c echo.Context) (err error) {
 		go dbmgr.InsertRecord(filename)
 	}
 	return c.Stream(http.StatusOK, "Content-type:application/pdf", f)
+}
+
+func GetFileHistory(c echo.Context) (err error) {
+	filename := c.QueryParam("filename")
+	if filename == "" {
+		return c.Render(http.StatusOK, "query", "World")
+	}
+	return c.Render(http.StatusOK, "query", "World")
 }
 
 func tryFindFile(filename string) (string, error) {
@@ -65,6 +80,12 @@ func start(c *cli.Context) error {
 	}
 	dbmgr = dm
 
+	t := &Template{
+		templates: template.Must(template.ParseGlob("public/template/*.html")),
+	}
+
+	log.Infof("Ts %#v", t)
+
 	e := echo.New()
 	e.Use(mw.Logger())
 	e.Use(mw.Recover())
@@ -72,9 +93,19 @@ func start(c *cli.Context) error {
 	e.Static("/", "public")
 	e.File("/viewer", "public/web/viewer.html")
 	e.File("/", "public/index.html")
+	e.Renderer = t
 	e.GET("/file/:filename", GetFile)
+	e.GET("/query", GetFileHistory)
 	e.Logger.Fatal(e.Start(FlagServerPort))
 	return nil
+}
+
+type Template struct {
+	templates *template.Template
+}
+
+func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
+	return t.templates.ExecuteTemplate(w, name, data)
 }
 
 func main() {
