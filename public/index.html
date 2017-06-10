@@ -21,7 +21,9 @@
   <body >
     <div class="container-fluid">
       <div class="row">
-        <div class="col-md-4"></div>
+        <div class="col-md-4">
+          <h3 id="filenamedisp"></h3>
+        </div>
         <div class="col-md-4">
           <div class="input-group input-group-lg">
             <span class="input-group-addon" id="sizing-addon1">@</span>
@@ -32,7 +34,7 @@
       </div>
       <div class="row">
         <div class="col-md-12">
-          <iframe frameborder="0" height="95%" width="100%" id="viewer" src="/viewer?file=file/HELLO"></iframe>
+          <iframe frameborder="0" height="93%" width="100%" id="viewer" src="/viewer?file=file/HELLO"></iframe>
         </div>
       </div>
     </div>
@@ -68,7 +70,9 @@
 function changeFile(){
   var inputdom = document.getElementById("filename");
   var viewerdom = document.getElementById("viewer");
+  var filenamedom= document.getElementById("filenamedisp");
   viewerdom.src = '/viewer?file=file/'+ inputdom.value;
+  filenamedom.innerHTML = inputdom.value;
   inputdom.value = '';
 };
     </script>
